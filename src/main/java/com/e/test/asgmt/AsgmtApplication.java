@@ -20,11 +20,11 @@ public class AsgmtApplication implements CommandLineRunner {
     SpringApplication.run(AsgmtApplication.class, args);
   }
 
-  //This method will run run after app init, find and print top 10 frequent words
+  // This method will run run after app init, find and print top 10 frequent words
   @Override
   public void run(String... args) throws Exception {
-    log.info("start - time::{}", LocalDateTime.now());
+    log.info("process started - (time::{})", LocalDateTime.now());
     wordFreqSearchService.findWordsByFreq("https://www.314e.com/");
-    log.info("end - time::{}", LocalDateTime.now());
+    log.info("process ended - (time::{})", LocalDateTime.now());
   }
 }

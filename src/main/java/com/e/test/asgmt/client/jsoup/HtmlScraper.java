@@ -22,10 +22,12 @@ import org.springframework.stereotype.Service;
 public class HtmlScraper {
   @Value("${test.url.expand.max.depth}")
   private Integer MAX_DEPTH;
+
   private HashSet<String> links = new HashSet<>();
 
   /**
    * Method to get all link from url till max depth using jsoup
+   *
    * @param url
    * @return
    */
@@ -39,14 +41,16 @@ public class HtmlScraper {
 
   /**
    * Method to find all unique word from url using jsoup
+   *
    * @param link
    * @param wordsMap
    * @return
    */
   @Async
-  public CompletableFuture<Boolean> getAllWordsWithFreq(String link, ConcurrentHashMap<String, Word> wordsMap) {
+  public CompletableFuture<Boolean> getAllWordsWithFreq(
+      String link, ConcurrentHashMap<String, Word> wordsMap) {
     boolean done = true;
-    //log.info("[getAllWordsWithFreq] link::{}, map size::{}", link, wordsMap.size());
+    // log.info("[getAllWordsWithFreq] link::{}, map size::{}", link, wordsMap.size());
     BufferedReader reader = null;
     try {
       Document doc = Jsoup.connect(link).get();
@@ -80,6 +84,7 @@ public class HtmlScraper {
       }
     } catch (Exception e) {
       log.error("[getAllWordsWithFreq] Error for link::{} ", link, e);
+      log.info("Process will continue ....");
       done = false;
     } finally {
       if (reader != null) {
@@ -87,23 +92,23 @@ public class HtmlScraper {
           reader.close();
         } catch (Exception e) {
           log.error("[getAllWordsWithFreq] Error for link::{} ", link, e);
+          log.info("Process will continue ....");
         }
       }
     }
-    //log.info("[getAllWordsWithFreq] ended process map count::{}", wordsMap.size());
+    // log.info("[getAllWordsWithFreq] ended process map count::{}", wordsMap.size());
     return CompletableFuture.completedFuture(done);
   }
 
   // ----------   private methods   --------------
 
   /**
-   *
    * @param url
    * @param depth
    */
   private void findAllLinksForDepth(String url, int depth) {
     if (!links.contains(url) && depth <= MAX_DEPTH) {
-      //log.info("[visitPages] url::{}, depth::{}", url, depth);
+      // log.info("[visitPages] url::{}, depth::{}", url, depth);
       try {
         links.add(url);
 
@@ -119,6 +124,7 @@ public class HtmlScraper {
         }
       } catch (Exception e) {
         log.error("[visitPages] Error for url::{} ", url, e);
+        log.info("Process will continue ....");
       }
     }
   }

@@ -25,6 +25,7 @@ public class WordFreqSearchService {
 
   /**
    * Method to find and print top 10 frequent words
+   *
    * @param url
    */
   public void findWordsByFreq(String url) {
