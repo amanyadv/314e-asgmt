@@ -23,6 +23,7 @@ public class HtmlScraper {
   @Value("${test.url.expand.max.depth}")
   private Integer MAX_DEPTH;
 
+  private String startUrl = "";
   private HashSet<String> links = new HashSet<>();
 
   /**
@@ -35,6 +36,7 @@ public class HtmlScraper {
     if (links.size() > 0) {
       links.clear();
     }
+    startUrl = url;
     findAllLinksForDepth(url, 0);
     return links;
   }
@@ -78,8 +80,7 @@ public class HtmlScraper {
             wordObj.setCount(0);
             wordsMap.put(word, wordObj);
           }
-          int count = wordObj.getCount();
-          wordObj.setCount(++count);
+          wordObj.incrCount();
         }
       }
     } catch (Exception e) {
@@ -92,7 +93,7 @@ public class HtmlScraper {
           reader.close();
         } catch (Exception e) {
           log.error("[getAllWordsWithFreq] Error for link::{} ", link, e);
-          log.info("Process will continue ....");
+          log.info("Process will continue .....");
         }
       }
     }
@@ -101,21 +102,21 @@ public class HtmlScraper {
   }
 
   // ----------   private methods   --------------
-
   /**
    * @param url
    * @param depth
    */
   private void findAllLinksForDepth(String url, int depth) {
     if (!links.contains(url) && depth <= MAX_DEPTH) {
-      // log.info("[visitPages] url::{}, depth::{}", url, depth);
+      //log.info("[visitPages] url::{}, depth::{}", url, depth);
       try {
         links.add(url);
 
         Document document = Jsoup.connect(url).get();
         document.body().text();
         document.head().text();
-        Elements linksOnPage = document.select("a[href^=\"https://www.314e.com/\"]");
+        //ignore external links
+        Elements linksOnPage = document.select("a[href^="+startUrl+"]");
 
         depth++;
 
@@ -124,7 +125,7 @@ public class HtmlScraper {
         }
       } catch (Exception e) {
         log.error("[visitPages] Error for url::{} ", url, e);
-        log.info("Process will continue ....");
+        log.info("Process will continue ...");
       }
     }
   }

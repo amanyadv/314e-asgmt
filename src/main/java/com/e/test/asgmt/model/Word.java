@@ -23,4 +23,8 @@ public class Word implements Comparable<Word> {
   public int compareTo(Word b) {
     return b.count - count;
   }
+
+  public void incrCount() {
+    this.count++;
+  }
 }

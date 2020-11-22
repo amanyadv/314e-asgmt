@@ -24,24 +24,26 @@ public class WordFreqSearchService {
   @Autowired private HtmlScraper htmlScraper;
 
   /**
-   * Method to find and print top 10 frequent words
+   * Method to find and print top K frequent words
    *
    * @param url
    */
   public void findWordsByFreq(String url) {
     ConcurrentHashMap<String, Word> wordsMap = new ConcurrentHashMap<>();
+    //get all the links for url till m depth
     HashSet<String> links = htmlScraper.getAllLinksForDepth(url);
     List<CompletableFuture<Boolean>> futures = new ArrayList<>();
+    //loop through links to find all freq words in that
     links.forEach(
-        link -> {
-          futures.add(htmlScraper.getAllWordsWithFreq(link, wordsMap));
-        });
+        link -> futures.add(htmlScraper.getAllWordsWithFreq(link, wordsMap)));
     // Join the completion of all the threads
     CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
+    //sort words by freq
     // log.info("[findWordsByFreq] total map size::{}", wordsMap.size());
     SortedSet<Word> sortedWords = new TreeSet<Word>(wordsMap.values());
     // log.info("[findWordsByFreq] sorted map size::{}", sortedWords.size());
+    //build string of top k most freq words and print
     StringBuilder stringBuilder = new StringBuilder();
     int i = 0;
     for (Word word : sortedWords) {
