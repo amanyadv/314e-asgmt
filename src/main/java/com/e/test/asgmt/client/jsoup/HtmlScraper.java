@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class HtmlScraper {
-  @Value("${test.url.expand.max.depth}")
+  @Value("${test.url.expand.max.depth:4}")
   private Integer MAX_DEPTH;
 
   private String startUrl = "";

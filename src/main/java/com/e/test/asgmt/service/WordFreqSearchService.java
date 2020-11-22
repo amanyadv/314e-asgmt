@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class WordFreqSearchService {
 
-  @Value("${test.top.frequent.words.count}")
+  @Value("${test.top.frequent.words.count:10}")
   private Integer TOP_WORDS_COUNT;
 
   @Autowired private HtmlScraper htmlScraper;
